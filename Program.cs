@@ -137,7 +137,7 @@ namespace ConsoleApp1 {
             
 
             if (Const.Debug) {
-                Console.WriteLine($"Start IO for {burst.Duration}");
+                Console.WriteLine($"P{result.ID} started IO for T{burst.Duration}");
             }
             burst.ReduceBy(burst.Duration);
 
@@ -150,7 +150,7 @@ namespace ConsoleApp1 {
 
             if (burst.Remain() > quantum) {
                 if (Const.Debug) {
-                    Console.WriteLine($"Start CPU for {quantum}");
+                    Console.WriteLine($"P{result.ID} started CPU for T{quantum}");
                 }
                 burst.ReduceBy(quantum);
                 future.Add(time + quantum, new Event(EventType.Preemption, result.ID));
@@ -162,7 +162,7 @@ namespace ConsoleApp1 {
             result.Bursts.Dequeue();
             
             if (Const.Debug) {
-                Console.WriteLine($"Start CPU for {duration}");
+                Console.WriteLine($"P{result.ID} started CPU for T{duration}");
             }
 
             burst.ReduceBy(duration);

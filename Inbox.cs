@@ -9,7 +9,7 @@ namespace ConsoleApp1 {
 
         public void Add(int time, Event e) {
             if (Const.Debug)
-                Console.WriteLine($"Schedule {e.Type} for {e.ProcessId} at T+{time}");
+                Console.WriteLine($"Schedule {e.Type} for P{e.ProcessId} at T+{time}");
             List<Event> list;
             if (!_inbox.TryGetValue(time, out list)) {
                 list = new List<Event>();
