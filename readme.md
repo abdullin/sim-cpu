@@ -3,6 +3,8 @@
 This is a reference project for simulating event-driven systems and
 understanding the passing of time.
 
+![screenshot](screenshot.png)
+
 ## Domain
 
 Domain is based on the task assignment:
