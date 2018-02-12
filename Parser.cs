@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SimCPU {
     public static class Parser {
-        public static Process Parse(int pid, string source) {
+        static Process Parse(int pid, string source) {
             var items = source.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             var arrival = int.Parse(items[0]);
 

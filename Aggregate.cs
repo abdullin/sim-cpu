@@ -44,7 +44,7 @@ namespace SimCPU {
                     proc.ReadyAdded = _sim.Time;
                     break;
                 case CommandType.Termination:
-                    proc.Terminated = _sim.Time;
+                    proc.TerminatedTime = _sim.Time;
                     _cpuIdle = true;
                     _sim.Debug($"P{pid} terminated");
                     break;
@@ -109,7 +109,7 @@ namespace SimCPU {
 
         public void PrintStatistics() {
             foreach (var proc in _processes) {
-                var tat = proc.Terminated - proc.ArrivalTime;
+                var tat = proc.TerminatedTime - proc.ArrivalTime;
 
                 Console.WriteLine(
                     $"P{proc.ID} (TAT = {tat}, ReadyWait = {proc.ReadyWait}, I/O-wait={proc.IOWait})");

@@ -4,7 +4,6 @@
         public readonly int ProcessId;
         public readonly CommandType Type;
 
-
         public Command(CommandType type, int processId, Process process = null) {
             Type = type;
             ProcessId = processId;

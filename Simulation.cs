@@ -17,9 +17,8 @@ namespace SimCPU {
         public void Schedule(int offset, Command e) {
             var time = offset + Time;
             Debug($"Schedule {e.Type} for P{e.ProcessId} at T{time}");
-            List<Command> list;
 
-            if (!_inbox.TryGetValue(time, out list)) {
+            if (!_inbox.TryGetValue(time, out var list)) {
                 list = new List<Command>();
                 _inbox.Add(time, list);
             }
@@ -33,17 +32,15 @@ namespace SimCPU {
                 return false;
             }
 
-            var l = _inbox.First();
-
-
-            list = l.Value;
-
-            var time = l.Key;
+            var future = _inbox.First();
+            
+            list = future.Value;
+            var time = future.Key;
 
             if (time > Time) {
-                // advance the simulation time
-                Debug($">>> Fast forward to T{time} >>>");
                 Time = time;
+                // advance the simulation time
+                Debug($">>> Fast forward to T{Time} >>>");
             }
 
             _inbox.RemoveAt(0);

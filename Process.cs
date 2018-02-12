@@ -10,7 +10,7 @@ namespace SimCPU {
         public int IOWait;
         public int ReadyAdded;
         public int ReadyWait;
-        public int Terminated;
+        public int TerminatedTime;
 
         public Process(int pid, Queue<Burst> bursts, int arrivalTime) {
             ID = pid;
@@ -30,7 +30,6 @@ namespace SimCPU {
         public readonly Resource Resource;
 
         int _executed;
-
 
         public Burst(Resource resource, int duration) {
             Resource = resource;
