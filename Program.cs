@@ -23,12 +23,12 @@
             }
 
             var agg = new Aggregate(timeQuantum, sim);
-
+            // run the simulation
             while (sim.FastForward(agg.CommandPriority, out var cmd)) {
                 agg.HandleCommand(cmd);
             }
 
-            sim.Debug("No future left, simulation is complete!");
+            sim.Debug("No future left, simulation is over!");
             agg.PrintStatistics();
         }
     }
