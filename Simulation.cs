@@ -27,18 +27,16 @@ namespace SimCPU {
             list.Add(e);
         }
 
-        public bool FastForward(Func<Command, int> priority, out Command cmd) {
+        public bool FastForward(out IList<Command> list) {
             if (_inbox.Count == 0) {
-                cmd = null;
+                list = null;
                 return false;
             }
 
             var l = _inbox.First();
 
 
-            var list = l.Value;
-
-            if (list.Count > 1) list.Sort((lf, r) => priority(lf).CompareTo(priority(r)));
+            list = l.Value;
 
             var time = l.Key;
 
@@ -48,11 +46,7 @@ namespace SimCPU {
                 Time = time;
             }
 
-            cmd = list[0];
-            list.RemoveAt(0);
-            if (list.Count == 0) _inbox.RemoveAt(0);
-
-
+            _inbox.RemoveAt(0);
             return true;
         }
     }

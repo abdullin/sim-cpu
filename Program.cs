@@ -24,8 +24,8 @@
 
             var agg = new Aggregate(timeQuantum, sim);
             // run the simulation
-            while (sim.FastForward(agg.CommandPriority, out var cmd)) {
-                agg.HandleCommand(cmd);
+            while (sim.FastForward(out var commands)) {
+                agg.HandleCommands(commands);
             }
 
             sim.Debug("No future left, simulation is over!");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SimCPU {
     public class Aggregate {
@@ -18,7 +19,15 @@ namespace SimCPU {
             _sim = sim;
         }
 
-        public void HandleCommand(Command cmd) {
+        public void HandleCommands(IList<Command> commands) {
+            // whenever multiple commands arrive at a point in time
+            // aggregate will decide the order
+            foreach (var cmd in commands.OrderBy(CommandPriority)) {
+                HandleCommand(cmd);
+            }
+        }
+
+        void HandleCommand(Command cmd) {
             if (cmd.Type == CommandType.Arrival) _processes.Add(cmd.Process);
 
             var pid = cmd.ProcessId;
@@ -79,7 +88,7 @@ namespace SimCPU {
         }
 
 
-        public int CommandPriority(Command e) {
+        int CommandPriority(Command e) {
             switch (e.Type) {
                 case CommandType.Arrival:
                     return 1;
