@@ -9,7 +9,7 @@ namespace ConsoleApp1 {
         private readonly SortedList<int, List<Command>> _inbox = new SortedList<int, List<Command>>();
 
         public void Add(int time, Command e) {
-            if (Const.Debug)
+            if (Debug)
                 Console.WriteLine($"Schedule {e.Type} for P{e.ProcessId} at T+{time}");
             List<Command> list;
             if (!_inbox.TryGetValue(time, out list)) {

@@ -4,9 +4,6 @@ using System.Runtime.CompilerServices;
 using System.Transactions;
 
 namespace ConsoleApp1 {
-    public static class Const {
-        public static bool Debug = true;
-    }
 
     internal class Program {
         private static void Main(string[] args) {
@@ -21,7 +18,9 @@ namespace ConsoleApp1 {
 13 4 1 15 1 12 4 8 6";
 
             var procs = Parser.ParseString(input);
-            var simulation = new Simulation();
+            var simulation = new Simulation() {
+                Debug = true
+            };
             
             
 

@@ -77,7 +77,7 @@ namespace ConsoleApp1 {
             }
 
 
-            if (Const.Debug) {
+            if (_sim.Debug) {
                 Console.WriteLine($"P{result.ID} started IO for T{burst.Duration}");
             }
 
@@ -120,7 +120,7 @@ namespace ConsoleApp1 {
 
 
             if (burst.Remain() > TimeQuantum) {
-                if (Const.Debug) {
+                if (_sim.Debug) {
                     Console.WriteLine($"P{result.ID} started CPU for T{TimeQuantum}");
                 }
 
@@ -133,7 +133,7 @@ namespace ConsoleApp1 {
             var duration = burst.Remain();
             result.Bursts.Dequeue();
 
-            if (Const.Debug) {
+            if (_sim.Debug) {
                 Console.WriteLine($"P{result.ID} started CPU for T{duration}");
             }
 
