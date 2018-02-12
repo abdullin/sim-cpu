@@ -14,7 +14,7 @@ namespace ConsoleApp1 {
             if (Verbose) Console.WriteLine($"T{Time:000}: {arg}");
         }
 
-        public void Add(int offset, Command e) {
+        public void Schedule(int offset, Command e) {
             var time = offset + Time;
             Debug($"Schedule {e.Type} for P{e.ProcessId} at T{time}");
             List<Command> list;
@@ -27,7 +27,7 @@ namespace ConsoleApp1 {
             list.Add(e);
         }
 
-        public bool FastForwardToNextCommand(Func<Command, int> priority, out Command cmd) {
+        public bool FastForward(Func<Command, int> priority, out Command cmd) {
             if (_inbox.Count == 0) {
                 cmd = null;
                 return false;

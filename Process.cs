@@ -2,7 +2,7 @@
 
 namespace ConsoleApp1 {
     public class Process {
-        public readonly int Arrival;
+        public readonly int ArrivalTime;
         public readonly Queue<Burst> Bursts;
         public readonly int ID;
 
@@ -12,10 +12,10 @@ namespace ConsoleApp1 {
         public int ReadyWait;
         public int Terminated;
 
-        public Process(int pid, Queue<Burst> bursts, int arrival) {
+        public Process(int pid, Queue<Burst> bursts, int arrivalTime) {
             ID = pid;
             Bursts = bursts;
-            Arrival = arrival;
+            ArrivalTime = arrivalTime;
         }
     }
 
