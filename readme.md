@@ -1,7 +1,12 @@
 # SimCPU
 
 This is a reference project for simulating event-driven systems and
-understanding the passing of time.
+understanding the passing of time. It is a part of the materials for two R&D
+projects:
+
+1. Deterministic simulation of event-driven systems (see [context](https://abdullin.com/sku-vault/2017-07-15-high-availability-and-performance/)).
+2. Event-driven view engine (or "event-driven mainframe").
+
 
 ![screenshot](screenshot.png)
 
