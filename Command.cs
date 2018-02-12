@@ -1,9 +1,9 @@
-﻿namespace ConsoleApp1 {
+﻿namespace SimCPU {
     public class Command {
+        public readonly Process Process;
         public readonly int ProcessId;
         public readonly CommandType Type;
-        public readonly Process Process;
-        
+
 
         public Command(CommandType type, int processId, Process process = null) {
             Type = type;
@@ -11,8 +11,7 @@
             Process = process;
         }
     }
-    
-    
+
 
     public enum CommandType {
         Arrival,

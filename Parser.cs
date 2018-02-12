@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ConsoleApp1 {
+namespace SimCPU {
     public static class Parser {
         public static Process Parse(int pid, string source) {
             var items = source.Split(' ', StringSplitOptions.RemoveEmptyEntries);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ConsoleApp1 {
+namespace SimCPU {
     public sealed class Simulation {
         readonly SortedList<int, List<Command>> _inbox = new SortedList<int, List<Command>>();
 

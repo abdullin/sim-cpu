@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ConsoleApp1 {
+namespace SimCPU {
     public class Aggregate {
         readonly Queue<Process> _ioQueue = new Queue<Process>();
-        readonly Queue<Process> _readyQueue = new Queue<Process>();
         readonly List<Process> _processes = new List<Process>();
+        readonly Queue<Process> _readyQueue = new Queue<Process>();
 
         readonly Simulation _sim;
         readonly int _timeQuantum;
-        
+
         bool _cpuIdle = true;
         bool _ioIdle = true;
 
@@ -19,10 +19,8 @@ namespace ConsoleApp1 {
         }
 
         public void HandleCommand(Command cmd) {
-            if (cmd.Type == CommandType.Arrival) {
-                _processes.Add(cmd.Process);
-            }
-            
+            if (cmd.Type == CommandType.Arrival) _processes.Add(cmd.Process);
+
             var pid = cmd.ProcessId;
 
             var proc = _processes[pid];
@@ -70,7 +68,7 @@ namespace ConsoleApp1 {
 
         void DispatchIOOperation(Process result) {
             var burst = result.Bursts.Dequeue();
-            if (burst.Resource != Resource.IO) 
+            if (burst.Resource != Resource.IO)
                 throw new InvalidOperationException("Must be an IO operation");
 
             _sim.Debug($"P{result.ID} started IO for T{burst.Duration}");

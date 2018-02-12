@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ConsoleApp1 {
+namespace SimCPU {
     public class Process {
         public readonly int ArrivalTime;
         public readonly Queue<Burst> Bursts;
