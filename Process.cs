@@ -2,15 +2,15 @@
 
 namespace ConsoleApp1 {
     public class Process {
-        public readonly Queue<Burst> Bursts;
         public readonly int Arrival;
-        public int Terminated;
+        public readonly Queue<Burst> Bursts;
         public readonly int ID;
 
         public int IOAdded;
-        public int ReadyAdded;
         public int IOWait;
+        public int ReadyAdded;
         public int ReadyWait;
+        public int Terminated;
 
         public Process(int pid, Queue<Burst> bursts, int arrival) {
             ID = pid;
@@ -18,18 +18,24 @@ namespace ConsoleApp1 {
             Arrival = arrival;
         }
     }
-    
-    
+
+
     public enum Resource {
         CPU,
-        IO,
+        IO
     }
 
     public class Burst {
-        public readonly Resource Resource;
         public readonly int Duration;
+        public readonly Resource Resource;
 
-        private int _executed;
+        int _executed;
+
+
+        public Burst(Resource resource, int duration) {
+            Resource = resource;
+            Duration = duration;
+        }
 
         public void ReduceBy(int duration) {
             _executed += duration;
@@ -37,12 +43,6 @@ namespace ConsoleApp1 {
 
         public int Remain() {
             return Duration - _executed;
-        }
-
-
-        public Burst(Resource resource, int duration) {
-            Resource = resource;
-            Duration = duration;
         }
     }
 }

@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace ConsoleApp1 {
     public class Aggregate {
-        public readonly int TimeQuantum;
-        private readonly List<Process> _processes;
-        private readonly Simulation _sim;
+        readonly Queue<Process> _ioQueue = new Queue<Process>();
+        readonly List<Process> _processes;
 
-
-        Queue<Process> readyQueue = new Queue<Process>();
-        Queue<Process> ioQueue = new Queue<Process>();
-        private bool cpuIdle = true;
-        private bool ioIdle = true;
+        readonly Queue<Process> _readyQueue = new Queue<Process>();
+        readonly Simulation _sim;
+        readonly int _timeQuantum;
+        bool _cpuIdle = true;
+        bool _ioIdle = true;
 
 
         public Aggregate(int timeQuantum, List<Process> processes, Simulation sim) {
-            TimeQuantum = timeQuantum;
+            _timeQuantum = timeQuantum;
             _processes = processes;
             _sim = sim;
         }
@@ -28,27 +26,27 @@ namespace ConsoleApp1 {
             var proc = _processes[pid];
             switch (cmd.Type) {
                 case CommandType.Arrival:
-                    readyQueue.Enqueue(proc);
+                    _readyQueue.Enqueue(proc);
                     proc.ReadyAdded = _sim.Time;
                     break;
                 case CommandType.Preemption:
-                    cpuIdle = true;
-                    readyQueue.Enqueue(proc);
+                    _cpuIdle = true;
+                    _readyQueue.Enqueue(proc);
                     proc.ReadyAdded = _sim.Time;
                     break;
                 case CommandType.Termination:
                     proc.Terminated = _sim.Time;
-
-                    cpuIdle = true;
+                    _cpuIdle = true;
+                    _sim.Debug($"P{pid} terminated");
                     break;
                 case CommandType.IORequest:
-                    ioQueue.Enqueue(proc);
+                    _ioQueue.Enqueue(proc);
                     proc.IOAdded = _sim.Time;
-                    cpuIdle = true;
+                    _cpuIdle = true;
                     break;
                 case CommandType.IOCompletion:
-                    ioIdle = true;
-                    readyQueue.Enqueue(proc);
+                    _ioIdle = true;
+                    _readyQueue.Enqueue(proc);
                     proc.ReadyAdded = _sim.Time;
                     break;
                 default:
@@ -56,37 +54,34 @@ namespace ConsoleApp1 {
             }
 
             Process cpuProc;
-            if (cpuIdle && readyQueue.TryDequeue(out cpuProc)) {
-                cpuIdle = false;
+            if (_cpuIdle && _readyQueue.TryDequeue(out cpuProc)) {
+                _cpuIdle = false;
                 cpuProc.ReadyWait += _sim.Time - cpuProc.ReadyAdded;
                 DispatchCPUProcess(cpuProc);
             }
 
             Process ioProc;
-            if (ioIdle && ioQueue.TryDequeue(out ioProc)) {
-                ioIdle = false;
+            if (_ioIdle && _ioQueue.TryDequeue(out ioProc)) {
+                _ioIdle = false;
                 ioProc.IOWait += _sim.Time - ioProc.IOAdded;
                 DispatchIOOperation(ioProc);
             }
         }
 
-        void DispatchIOOperation(Process result) {
+        private void DispatchIOOperation(Process result) {
             var burst = result.Bursts.Dequeue();
-            if (burst.Resource != Resource.IO) {
-                throw new InvalidOperationException("Must be an IO operation");
-            }
+            if (burst.Resource != Resource.IO) throw new InvalidOperationException("Must be an IO operation");
 
 
-            if (_sim.Debug) {
-                Console.WriteLine($"P{result.ID} started IO for T{burst.Duration}");
-            }
+            _sim.Debug($"P{result.ID} started IO for T{burst.Duration}");
+
 
             burst.ReduceBy(burst.Duration);
 
-            _sim.Add(_sim.Time + burst.Duration, new Command(CommandType.IOCompletion, result.ID));
+            _sim.Add(burst.Duration, new Command(CommandType.IOCompletion, result.ID));
         }
-        
-        
+
+
         public int Priority(Command e) {
             switch (e.Type) {
                 case CommandType.Arrival:
@@ -109,23 +104,21 @@ namespace ConsoleApp1 {
         public void PrintStatistics() {
             foreach (var proc in _processes) {
                 var tat = proc.Terminated - proc.Arrival;
-                        
+
                 Console.WriteLine(
                     $"P{proc.ID} (TAT = {tat}, ReadyWait = {proc.ReadyWait}, I/O-wait={proc.IOWait})");
             }
         }
 
-        void DispatchCPUProcess(Process result) {
+        private void DispatchCPUProcess(Process result) {
             var burst = result.Bursts.Peek();
 
 
-            if (burst.Remain() > TimeQuantum) {
-                if (_sim.Debug) {
-                    Console.WriteLine($"P{result.ID} started CPU for T{TimeQuantum}");
-                }
+            if (burst.Remain() > _timeQuantum) {
+                _sim.Debug($"P{result.ID} started CPU for T{_timeQuantum}");
 
-                burst.ReduceBy(TimeQuantum);
-                _sim.Add(_sim.Time + TimeQuantum, new Command(CommandType.Preemption, result.ID));
+                burst.ReduceBy(_timeQuantum);
+                _sim.Add(_timeQuantum, new Command(CommandType.Preemption, result.ID));
                 return;
             }
 
@@ -133,15 +126,15 @@ namespace ConsoleApp1 {
             var duration = burst.Remain();
             result.Bursts.Dequeue();
 
-            if (_sim.Debug) {
-                Console.WriteLine($"P{result.ID} started CPU for T{duration}");
-            }
+
+            _sim.Debug($"P{result.ID} started CPU for T{duration}");
+
 
             burst.ReduceBy(duration);
 
 
             if (result.Bursts.Count == 0) {
-                _sim.Add(_sim.Time + duration, new Command(CommandType.Termination, result.ID));
+                _sim.Add(duration, new Command(CommandType.Termination, result.ID));
                 return;
             }
 
@@ -149,7 +142,7 @@ namespace ConsoleApp1 {
                 case Resource.CPU:
                     throw new InvalidOperationException("CPU burst can't follow CPU burst");
                 case Resource.IO:
-                    _sim.Add(_sim.Time + duration, new Command(CommandType.IORequest, result.ID));
+                    _sim.Add(duration, new Command(CommandType.IORequest, result.ID));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

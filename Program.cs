@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Transactions;
 
 namespace ConsoleApp1 {
-
-    internal class Program {
-        private static void Main(string[] args) {
+    class Program {
+        static void Main(string[] args) {
             const int quantum = 2;
 
             const string input =
@@ -18,45 +14,22 @@ namespace ConsoleApp1 {
 13 4 1 15 1 12 4 8 6";
 
             var procs = Parser.ParseString(input);
-            var simulation = new Simulation() {
-                Debug = true
+            var simulation = new Simulation {
+                Verbose = true
             };
-            
-            
 
-            for (int i = 0; i < procs.Count; i++) {
+
+            for (var i = 0; i < procs.Count; i++) {
                 var proc = procs[i];
                 simulation.Add(proc.Arrival, new Command(CommandType.Arrival, i));
             }
-            
+
             var agg = new Aggregate(quantum, procs, simulation);
 
 
-            while (simulation.FastForwardToNextCommand(agg.Priority, out var cmd)) {
-                agg.HandleCommand(cmd);
-            }
+            while (simulation.FastForwardToNextCommand(agg.Priority, out var cmd)) agg.HandleCommand(cmd);
             Console.WriteLine("Simulation complete!");
             agg.PrintStatistics();
         }
-    }
-
-
-
-    public class Command {
-        public readonly CommandType Type;
-        public readonly int ProcessId;
-
-        public Command(CommandType type, int processId) {
-            Type = type;
-            ProcessId = processId;
-        }
-    }
-
-    public enum CommandType {
-        Arrival,
-        Preemption,
-        Termination,
-        IORequest,
-        IOCompletion,
     }
 }

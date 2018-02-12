@@ -11,11 +11,12 @@ namespace ConsoleApp1 {
             var list = new Queue<Burst>();
 
 
-            for (int i = 2; i < items.Length; i++) {
-                var type = (i % 2 == 0) ? Resource.CPU : Resource.IO;
+            for (var i = 2; i < items.Length; i++) {
+                var type = i % 2 == 0 ? Resource.CPU : Resource.IO;
                 var duration = int.Parse(items[i]);
                 list.Enqueue(new Burst(type, duration));
             }
+
             return new Process(pid, list, arrival);
         }
 
@@ -24,7 +25,6 @@ namespace ConsoleApp1 {
                 .Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries)
                 .Select((s, i) => Parse(i, s))
                 .ToList();
-        } 
-
+        }
     }
 }

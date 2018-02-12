@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 
 namespace ConsoleApp1 {
     public sealed class Simulation {
-        
-        private readonly SortedList<int, List<Command>> _inbox = new SortedList<int, List<Command>>();
+        readonly SortedList<int, List<Command>> _inbox = new SortedList<int, List<Command>>();
 
-        public void Add(int time, Command e) {
-            if (Debug)
-                Console.WriteLine($"Schedule {e.Type} for P{e.ProcessId} at T+{time}");
+        public int Time { get; private set; }
+        public bool Verbose { get; set; }
+
+
+        public void Debug(string arg) {
+            if (Verbose) Console.WriteLine($"T{Time:000}: {arg}");
+        }
+
+        public void Add(int offset, Command e) {
+            var time = offset + Time;
+            Debug($"Schedule {e.Type} for P{e.ProcessId} at T{time}");
             List<Command> list;
+
             if (!_inbox.TryGetValue(time, out list)) {
                 list = new List<Command>();
                 _inbox.Add(time, list);
@@ -19,12 +26,8 @@ namespace ConsoleApp1 {
 
             list.Add(e);
         }
-        
-        public int Time { get; private set; }
-        public bool Debug { get; set; }
 
-        public bool FastForwardToNextCommand(Func<Command,int> priority, out Command cmd) {
-            
+        public bool FastForwardToNextCommand(Func<Command, int> priority, out Command cmd) {
             if (_inbox.Count == 0) {
                 cmd = null;
                 return false;
@@ -35,26 +38,21 @@ namespace ConsoleApp1 {
 
             var list = l.Value;
 
-            if (list.Count > 1) {
-                list.Sort((@lf, @r) => priority(lf).CompareTo(priority(r)));
-                //Console.WriteLine("Competing futures: {0}", string.Join(", ", list.Select(x => x.Type)));
-            }
+            if (list.Count > 1) list.Sort((lf, r) => priority(lf).CompareTo(priority(r)));
 
             var time = l.Key;
-            
+
             if (time > Time) {
                 // advance the simulation time
+                Debug($"Fast forward to T{time}");
                 Time = time;
-                if (Debug)
-                    Console.WriteLine("Fast forward: T+" + time);
-            }
-            cmd = list[0];
-            list.RemoveAt(0);
-            if (list.Count == 0) {
-                _inbox.RemoveAt(0);
             }
 
-            
+            cmd = list[0];
+            list.RemoveAt(0);
+            if (list.Count == 0) _inbox.RemoveAt(0);
+
+
             return true;
         }
     }
