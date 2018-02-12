@@ -30,7 +30,7 @@ namespace ConsoleApp1 {
                 agg.HandleCommand(cmd);
             }
             
-            Console.WriteLine("Simulation complete!");
+            Console.WriteLine("No future left, simulation is complete!");
             agg.PrintStatistics();
         }
     }

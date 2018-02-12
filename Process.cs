@@ -37,7 +37,7 @@ namespace ConsoleApp1 {
             Duration = duration;
         }
 
-        public void ReduceBy(int duration) {
+        public void ReduceAmountBy(int duration) {
             _executed += duration;
         }
 

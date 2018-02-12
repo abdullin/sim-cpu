@@ -4,24 +4,21 @@ using System.Collections.Generic;
 namespace ConsoleApp1 {
     public class Aggregate {
         readonly Queue<Process> _ioQueue = new Queue<Process>();
+        readonly Queue<Process> _readyQueue = new Queue<Process>();
         readonly List<Process> _processes = new List<Process>();
 
-        readonly Queue<Process> _readyQueue = new Queue<Process>();
         readonly Simulation _sim;
         readonly int _timeQuantum;
+        
         bool _cpuIdle = true;
         bool _ioIdle = true;
 
-
         public Aggregate(int timeQuantum, Simulation sim) {
             _timeQuantum = timeQuantum;
-            
             _sim = sim;
         }
 
-
         public void HandleCommand(Command cmd) {
-
             if (cmd.Type == CommandType.Arrival) {
                 _processes.Add(cmd.Process);
             }
@@ -31,7 +28,6 @@ namespace ConsoleApp1 {
             var proc = _processes[pid];
             switch (cmd.Type) {
                 case CommandType.Arrival:
-                    
                     _readyQueue.Enqueue(proc);
                     proc.ReadyAdded = _sim.Time;
                     break;
@@ -59,30 +55,27 @@ namespace ConsoleApp1 {
                     throw new ArgumentOutOfRangeException("command type", cmd.Type.ToString(), "out of range");
             }
 
-            Process cpuProc;
-            if (_cpuIdle && _readyQueue.TryDequeue(out cpuProc)) {
+            if (_cpuIdle && _readyQueue.TryDequeue(out var cpuProc)) {
                 _cpuIdle = false;
                 cpuProc.ReadyWait += _sim.Time - cpuProc.ReadyAdded;
                 DispatchCPUProcess(cpuProc);
             }
 
-            Process ioProc;
-            if (_ioIdle && _ioQueue.TryDequeue(out ioProc)) {
+            if (_ioIdle && _ioQueue.TryDequeue(out var ioProc)) {
                 _ioIdle = false;
                 ioProc.IOWait += _sim.Time - ioProc.IOAdded;
                 DispatchIOOperation(ioProc);
             }
         }
 
-        private void DispatchIOOperation(Process result) {
+        void DispatchIOOperation(Process result) {
             var burst = result.Bursts.Dequeue();
-            if (burst.Resource != Resource.IO) throw new InvalidOperationException("Must be an IO operation");
-
+            if (burst.Resource != Resource.IO) 
+                throw new InvalidOperationException("Must be an IO operation");
 
             _sim.Debug($"P{result.ID} started IO for T{burst.Duration}");
 
-
-            burst.ReduceBy(burst.Duration);
+            burst.ReduceAmountBy(burst.Duration);
 
             _sim.Schedule(burst.Duration, new Command(CommandType.IOCompletion, result.ID));
         }
@@ -116,14 +109,14 @@ namespace ConsoleApp1 {
             }
         }
 
-        private void DispatchCPUProcess(Process result) {
+        void DispatchCPUProcess(Process result) {
             var burst = result.Bursts.Peek();
 
 
             if (burst.Remain() > _timeQuantum) {
                 _sim.Debug($"P{result.ID} started CPU for T{_timeQuantum}");
 
-                burst.ReduceBy(_timeQuantum);
+                burst.ReduceAmountBy(_timeQuantum);
                 _sim.Schedule(_timeQuantum, new Command(CommandType.Preemption, result.ID));
                 return;
             }
@@ -135,8 +128,7 @@ namespace ConsoleApp1 {
 
             _sim.Debug($"P{result.ID} started CPU for T{duration}");
 
-
-            burst.ReduceBy(duration);
+            burst.ReduceAmountBy(duration);
 
 
             if (result.Bursts.Count == 0) {

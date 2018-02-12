@@ -44,7 +44,7 @@ namespace ConsoleApp1 {
 
             if (time > Time) {
                 // advance the simulation time
-                Debug($"Fast forward to T{time}");
+                Debug($">>> Fast forward to T{time} >>>");
                 Time = time;
             }
 

@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1.csproj", "{B51B962C-2DAC-4FE4-B838-0B223443D4DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimCPU", "SimCPU.csproj", "{B51B962C-2DAC-4FE4-B838-0B223443D4DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
