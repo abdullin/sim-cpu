@@ -77,6 +77,11 @@ command to happen in the future.
 
 The simulation ends when it has no future left.
 
+## See also
+
+* [Naive simulation of a ring of actors](https://gist.github.com/abdullin/af7c9b7fd4aa58cadcc346c8e194d9ab)
+* [An example of event-driven system potentially fit for such simulation](https://abdullin.com/sku-vault/2017-07-15-high-availability-and-performance/)
+
 ## Bonus Points
 
 The implementation almost works. For some reason, while running the
