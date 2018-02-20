@@ -77,6 +77,11 @@ command to happen in the future.
 
 The simulation ends when it has no future left.
 
+## Questions
+
+- What is a fuzz testing? How could it be applied to this project?
+- How would you reproduce and debug issues discovered by the fuzz testing?
+
 ## See also
 
 * [Naive simulation of a ring of actors](https://gist.github.com/abdullin/af7c9b7fd4aa58cadcc346c8e194d9ab)
