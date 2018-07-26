@@ -115,3 +115,7 @@ P5 (TAT = 75, ReadyWait = 5, I/O-wait=23)
 ```
 
 Note the different `ReadyWait` and `I/O-wait` values for `P5`.
+
+## I want to learn more! What is next?
+
+Check out [Naive simulation of a ring of actors](https://gist.github.com/abdullin/af7c9b7fd4aa58cadcc346c8e194d9ab). 
